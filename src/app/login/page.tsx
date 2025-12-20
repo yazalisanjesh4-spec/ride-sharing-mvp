@@ -43,7 +43,7 @@ export default function LoginPage() {
         <label className="mb-1 block text-sm text-black">Email</label>
         <input
           type="email"
-          className="mb-3 w-full rounded border p-2"
+          className="mb-3 w-full text-black rounded border p-2"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
@@ -51,7 +51,7 @@ export default function LoginPage() {
         <label className="mb-1 block text-sm text-black">Password</label>
         <input
           type="password"
-          className="mb-4 w-full rounded border p-2"
+          className="mb-4 w-full text-black rounded border p-2"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />

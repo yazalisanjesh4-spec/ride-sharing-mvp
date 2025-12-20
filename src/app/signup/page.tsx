@@ -34,7 +34,7 @@ export default function SignupPage() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-amber-200">
+    <div className="flex min-h-screen items-center justify-center bg-white">
       <div className="w-full max-w-md rounded-lg bg-white p-6 shadow">
         <h1 className="mb-6 text-center text-2xl font-semibold text-black">
           Create account
@@ -42,7 +42,7 @@ export default function SignupPage() {
 
         <label className="mb-1 block text-sm text-gray-700">Email</label>
         <input
-          className="mb-4 w-full rounded border p-2"
+          className="mb-4 w-full text-black rounded border p-2"
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
@@ -50,7 +50,7 @@ export default function SignupPage() {
 
         <label className="mb-1 block text-sm text-gray-700">Password</label>
         <input
-          className="mb-4 w-full rounded border p-2"
+          className="mb-4 w-full text-black rounded border p-2"
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
