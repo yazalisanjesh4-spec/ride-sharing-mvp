@@ -31,3 +31,10 @@ export async function signInWithGoogle() {
   const result = await signInWithPopup(auth, provider);
   return result.user;
 }
+
+import { signOut } from "firebase/auth";
+
+// LOGOUT
+export async function logoutUser() {
+  await signOut(auth);
+}
