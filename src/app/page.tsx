@@ -38,8 +38,9 @@ export default function HomePage() {
         {/* Info */}
         <p className="text-sm text-gray-500">
           This is a peer-to-peer ride sharing app.  
-          No drivers. No surge pricing.  
+          No drivers. No surge pricing.
           Just people travelling the same way.
+
         </p>
       </div>
     </main>
