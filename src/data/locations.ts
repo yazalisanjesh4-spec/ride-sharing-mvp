@@ -11,4 +11,6 @@ export const LOCATIONS: string[] = [
   "Gurgaon",
   "Kolkata",
   "Ahmedabad",
+  "shivalika palace",
+  "kishan vintage"
 ];

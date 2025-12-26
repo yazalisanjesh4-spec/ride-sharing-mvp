@@ -3,6 +3,7 @@
 export default function HomePage() {
   return (
     <main className="min-h-screen bg-white px-4 pt-10 pb-24">
+
       <div className="max-w-md mx-auto text-center">
 
         {/* Welcome Card */}
@@ -25,14 +26,14 @@ export default function HomePage() {
         <div className="space-y-4">
           <a
             href="/offer"
-            className="block w-full bg-gray-900 text-white py-3 rounded-lg text-center"
+            className="block w-full bg-[linear-gradient(90deg,#5170ff,#ff66c4)] text-white py-3 rounded-lg text-center"
           >
             Offer a Ride
           </a>
 
           <a
             href="/book"
-            className="block w-full border border-gray-300 text-gray-900 py-3 rounded-lg text-center"
+            className="block w-full bg-black text-white py-3 rounded-lg text-center"
           >
             Find a Ride
           </a>
