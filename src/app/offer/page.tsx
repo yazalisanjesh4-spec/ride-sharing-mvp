@@ -2,8 +2,11 @@
 
 import { useState } from "react";
 import { LOCATIONS } from "@/data/locations";
+import { useRouter } from "next/navigation";
 
 export default function OfferRidePage() {
+  const router = useRouter();
+
   const [vehicleType, setVehicleType] = useState<"bike" | "car">("bike");
   const [seats, setSeats] = useState(1);
   const [costPerSeat, setCostPerSeat] = useState("");
@@ -12,8 +15,22 @@ export default function OfferRidePage() {
   const [to, setTo] = useState("");
   const [pickupNotes, setPickupNotes] = useState("");
 
+  const [genderPreference, setGenderPreference] = useState<
+    "any" | "female" | "male"
+  >("any");
+
+  const [date, setDate] = useState("");
+  const [time, setTime] = useState("");
+
   const [showFromSuggestions, setShowFromSuggestions] = useState(false);
   const [showToSuggestions, setShowToSuggestions] = useState(false);
+
+  const isFormValid =
+    from.trim() !== "" &&
+    to.trim() !== "" &&
+    date !== "" &&
+    time !== "" &&
+    Number(costPerSeat) > 0;
 
   function handleVehicleChange(type: "bike" | "car") {
     setVehicleType(type);
@@ -25,6 +42,37 @@ export default function OfferRidePage() {
     return LOCATIONS.filter((loc) =>
       loc.toLowerCase().includes(value.toLowerCase())
     );
+  }
+
+  const today = new Date().toISOString().split("T")[0];
+  const nowTime = new Date().toTimeString().slice(0, 5);
+
+  function handlePostRide() {
+    if (!isFormValid) return;
+
+    const vehicle = localStorage.getItem("vehicleDetails");
+
+    if (!vehicle) {
+      alert("Please add vehicle & license details before posting a ride");
+      router.push("/profile/vehicle");
+      return;
+    }
+
+    alert("Ride posted successfully (mock)");
+  }
+
+  // ✅ Reliable 12-hour formatter
+  function formatTo12Hour(time: string) {
+    if (!time) return "";
+
+    const [h, m] = time.split(":");
+    let hour = Number(h);
+    const minute = m.padStart(2, "0");
+    const ampm = hour >= 12 ? "PM" : "AM";
+
+    hour = hour % 12 || 12;
+
+    return `${hour}:${minute} ${ampm}`;
   }
 
   return (
@@ -39,10 +87,11 @@ export default function OfferRidePage() {
           <label className="block text-sm text-gray-600 mb-2">
             Vehicle Type
           </label>
+
           <div className="flex gap-4">
             <button
               onClick={() => handleVehicleChange("bike")}
-              className={`flex-1 py-2 rounded-lg border text-gray-800 ${
+              className={`flex-1 py-2 rounded-lg border text-gray-900 ${
                 vehicleType === "bike"
                   ? "bg-gray-100 border-gray-900"
                   : "bg-white border-gray-300"
@@ -50,9 +99,10 @@ export default function OfferRidePage() {
             >
               Bike
             </button>
+
             <button
               onClick={() => handleVehicleChange("car")}
-              className={`flex-1 py-2 rounded-lg border text-gray-800 ${
+              className={`flex-1 py-2 rounded-lg border text-gray-900 ${
                 vehicleType === "car"
                   ? "bg-gray-100 border-gray-900"
                   : "bg-white border-gray-300"
@@ -68,10 +118,11 @@ export default function OfferRidePage() {
           <label className="block text-sm text-gray-600 mb-1">
             Seats Available
           </label>
+
           <select
             value={seats}
             onChange={(e) => setSeats(Number(e.target.value))}
-            className="w-full border border-gray-300 rounded-lg px-3 py-2 bg-white text-gray-800"
+            className="w-full border border-gray-300 rounded-lg px-3 py-2 bg-white text-gray-900"
           >
             {vehicleType === "bike" ? (
               <option value={1}>1 seat</option>
@@ -85,17 +136,40 @@ export default function OfferRidePage() {
           </select>
         </div>
 
+        {/* Gender */}
+        <div className="mb-6">
+          <label className="block text-sm text-gray-600 mb-1">
+            Gender Preference
+          </label>
+
+          <select
+            value={genderPreference}
+            onChange={(e) =>
+              setGenderPreference(e.target.value as "any" | "female" | "male")
+            }
+            className="w-full border border-gray-300 rounded-lg px-3 py-2 bg-white text-gray-900"
+          >
+            <option value="any">Any</option>
+            <option value="female">Female</option>
+            <option value="male">Male</option>
+          </select>
+        </div>
+
         {/* Cost */}
         <div className="mb-6">
           <label className="block text-sm text-gray-600 mb-1">
             Cost per seat (₹)
           </label>
+
           <input
             type="number"
+            min={0}
             value={costPerSeat}
-            onChange={(e) => setCostPerSeat(e.target.value)}
+            onChange={(e) =>
+              setCostPerSeat(Math.max(0, Number(e.target.value)).toString())
+            }
             placeholder="e.g. 150"
-            className="w-full border border-gray-300 rounded-lg px-3 py-2 bg-white text-gray-800 placeholder-gray-400"
+            className="w-full border border-gray-300 rounded-lg px-3 py-2 bg-white text-gray-900 placeholder-gray-400"
           />
         </div>
 
@@ -109,11 +183,10 @@ export default function OfferRidePage() {
               setShowFromSuggestions(true);
             }}
             placeholder="Starting location"
-            suppressHydrationWarning
-            className="w-full border border-gray-300 rounded-lg px-3 py-2 bg-white text-gray-800 placeholder-gray-400"
+            className="w-full border border-gray-300 rounded-lg px-3 py-2 bg-white text-gray-900 placeholder-gray-400"
           />
           {showFromSuggestions && getSuggestions(from).length > 0 && (
-            <ul className="absolute z-10 w-full bg-white border border-gray-200 rounded-lg mt-1">
+            <ul className="absolute z-10 w-full bg-white border border-gray-200 rounded-lg mt-1 shadow">
               {getSuggestions(from).map((loc) => (
                 <li
                   key={loc}
@@ -121,7 +194,7 @@ export default function OfferRidePage() {
                     setFrom(loc);
                     setShowFromSuggestions(false);
                   }}
-                  className="px-3 py-2 bg-white text-gray-800 hover:bg-gray-100 cursor-pointer"
+                  className="px-3 py-2 text-gray-900 hover:bg-gray-100 cursor-pointer"
                 >
                   {loc}
                 </li>
@@ -140,11 +213,10 @@ export default function OfferRidePage() {
               setShowToSuggestions(true);
             }}
             placeholder="Destination"
-            suppressHydrationWarning
-            className="w-full border border-gray-300 rounded-lg px-3 py-2 bg-white text-gray-800 placeholder-gray-400"
+            className="w-full border border-gray-300 rounded-lg px-3 py-2 bg-white text-gray-900 placeholder-gray-400"
           />
           {showToSuggestions && getSuggestions(to).length > 0 && (
-            <ul className="absolute z-10 w-full bg-white border border-gray-200 rounded-lg mt-1">
+            <ul className="absolute z-10 w-full bg-white border border-gray-200 rounded-lg mt-1 shadow">
               {getSuggestions(to).map((loc) => (
                 <li
                   key={loc}
@@ -152,7 +224,7 @@ export default function OfferRidePage() {
                     setTo(loc);
                     setShowToSuggestions(false);
                   }}
-                  className="px-3 py-2 bg-white text-gray-800 hover:bg-gray-100 cursor-pointer"
+                  className="px-3 py-2 text-gray-900 hover:bg-gray-100 cursor-pointer"
                 >
                   {loc}
                 </li>
@@ -161,7 +233,7 @@ export default function OfferRidePage() {
           )}
         </div>
 
-        {/* Pickup Notes */}
+        {/* Pickup */}
         <div className="mb-6">
           <label className="block text-sm text-gray-600 mb-1">
             Pickup notes (optional)
@@ -170,28 +242,51 @@ export default function OfferRidePage() {
             value={pickupNotes}
             onChange={(e) => setPickupNotes(e.target.value)}
             placeholder="e.g. Near metro gate 2"
-            className="w-full border border-gray-300 rounded-lg px-3 py-2 bg-white text-gray-800 placeholder-gray-400"
+            className="w-full border border-gray-300 rounded-lg px-3 py-2 bg-white text-gray-900 placeholder-gray-400"
           />
         </div>
 
-        {/* Date & Time */}
+        {/* Date */}
         <div className="mb-4">
           <label className="block text-sm text-gray-600 mb-1">Date</label>
           <input
             type="date"
-            className="w-full border border-gray-300 rounded-lg px-3 py-2 bg-white text-gray-800"
+            value={date}
+            min={today}
+            onChange={(e) => setDate(e.target.value)}
+            className="w-full border border-gray-300 rounded-lg px-3 py-2 bg-white text-gray-900"
           />
         </div>
 
+        {/* Time */}
         <div className="mb-6">
           <label className="block text-sm text-gray-600 mb-1">Time</label>
           <input
             type="time"
-            className="w-full border border-gray-300 rounded-lg px-3 py-2 bg-white text-gray-800"
+            value={time}
+            min={date === today ? nowTime : undefined}
+            onChange={(e) => setTime(e.target.value)}
+            className="w-full border border-gray-300 rounded-lg px-3 py-2 bg-white text-gray-900"
           />
+          {time && (
+            <p className="mt-1 text-sm text-gray-600">
+              Selected time:{" "}
+              <span className="font-medium text-gray-900">
+                {formatTo12Hour(time)}
+              </span>
+            </p>
+          )}
         </div>
 
-        <button className="w-full bg-gray-900 text-white py-3 rounded-lg">
+        <button
+          onClick={handlePostRide}
+          disabled={!isFormValid}
+          className={`w-full py-3 rounded-lg text-white transition ${
+            isFormValid
+              ? "bg-indigo-600"
+              : "bg-gray-300 cursor-not-allowed"
+          }`}
+        >
           Post Ride
         </button>
       </div>
