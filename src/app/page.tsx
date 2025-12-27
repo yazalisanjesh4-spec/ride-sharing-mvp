@@ -26,14 +26,14 @@ export default function HomePage() {
         <div className="space-y-4">
           <a
             href="/offer"
-            className="block w-full bg-[linear-gradient(90deg,#5170ff,#ff66c4)] text-white py-3 rounded-lg text-center"
+            className="block w-full bg-indigo-600 text-white py-3 rounded-lg text-center"
           >
             Offer a Ride
           </a>
 
           <a
             href="/book"
-            className="block w-full bg-black text-white py-3 rounded-lg text-center"
+            className="block w-full bg-purple-600 text-white py-3 rounded-lg text-center"
           >
             Find a Ride
           </a>
